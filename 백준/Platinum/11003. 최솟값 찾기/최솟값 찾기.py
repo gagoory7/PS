@@ -9,7 +9,7 @@ nums = list(map(int,input().split()))
 q = deque()
 
 for i in range(n) :
-    while q and q[-1][1] > nums[i] :
+    while q and q[-1][1] >= nums[i] :
         q.pop()
     q.append((i,nums[i]))
     if q[0][0] <= i-l :
