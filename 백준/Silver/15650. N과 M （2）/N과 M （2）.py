@@ -1,20 +1,18 @@
 import sys
-input = sys.stdin.readline
+# input = sys.stdin.readline
 
-def backtracking():
+def backtracking(start):
     if len(array) == m :
-        s = sorted(array)
-        if s == array :
-            print(" ".join(map(str, array)))
+        print(" ".join(map(str, array)))
         return
     
-    for i in range(1,n+1) :
+    for i in range(start,n+1) :
         if i not in array :
             array.append(i)
-            backtracking()
+            backtracking(i+1)
             array.pop()
 
 n, m = map(int,input().split())
 array = []
 
-backtracking()
+backtracking(1)
