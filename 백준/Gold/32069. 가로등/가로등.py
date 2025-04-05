@@ -1,34 +1,33 @@
 from collections import deque
+from sys import stdin
+input = stdin.readline
 
-L, N, K = map(int, input().split())
-lamps = list(map(int, input().split()))
+l, n, k = map(int, input().split())
+coor = list(map(int, input().split()))
 
-darkness = [1e9] * (L + 1)
-visited = [False] * (L + 1)
+visit = set() # 이미 방문한 위치 저장
+q = deque()
+light = dict() # {위치: 어두운 정도}
+for i in range(n):
+    visit.add(coor[i])
+    light[coor[i]] = 0
+    q.append(coor[i])
 
-queue = deque()
-
-# 가로등에서 BFS 시작
-for lamp in lamps:
-    queue.append((lamp, 0))
-    visited[lamp] = True
-    darkness[lamp] = 0
-
-while queue:
-    x, dist = queue.popleft()
-
-    for dx in [-1, 1]:
-        nx = x + dx
-        if 0 <= nx <= L and not visited[nx]:
-            visited[nx] = True
-            darkness[nx] = dist + 1
-            queue.append((nx, dist + 1))
-
-# 정렬하고 K개 출력
-darkness.sort()
-cnt = 0
-for d in darkness:
-    print(d)
-    cnt += 1
-    if cnt == K:
+count = 0
+while q:
+    i = q.popleft()
+    count += 1
+    if i - 1 >= 0 and i - 1 not in visit:
+        light[i - 1] = light[i] + 1
+        visit.add(i - 1)
+        q.append(i - 1)
+    if i + 1 <= l and i + 1 not in visit:
+        light[i + 1] = light[i] + 1
+        visit.add(i + 1)
+        q.append(i + 1)
+    if count == k: # k번째까지 출력할 것이기 때문에 k번 반복 후 종료
         break
+
+light = sorted(light.items(), key=lambda x:x[1]) # 딕셔너리를 value 기준으로 오름차순 정렬
+for i in range (k) :
+    print(light[i][1])
