@@ -12,6 +12,7 @@ num = 2
 dx = [1,-1,0,0]
 dy = [0,0,1,-1]
 
+# 처음 섬 구분 
 def bfs(x,y) :
     global num
     graphs[x][y] = num
@@ -37,29 +38,36 @@ for i in range(n) :
     
 answer = 1e8
 
+# 가장 가까운 섬 찾기 
 def bfs2(v):
-  queue = deque()
+  q = deque()
+
+  # 거리이자 좌표가 갔는지
   dist = [[-1]*n for _ in range(n)]
 
+  # 섬 별 첫 시작 좌표
   for i in range(n):
     for j in range(n):
       if graphs[i][j]==v:
         dist[i][j] = 0
-        queue.append([i,j])
+        q.append([i,j])
 
-  while queue:
-    x, y = queue.popleft()
-    for (w, h) in [[1,0],[0,1],[-1,0],[0,-1]]:
-      dx, dy = x+w, y+h
-      if 0<=dx<n and 0<=dy<n:
-        if graphs[dx][dy] and graphs[dx][dy]!=v:
-          return dist[x][y]
-        elif (not graphs[dx][dy]) and dist[dx][dy]==-1:
-          dist[dx][dy] = dist[x][y]+1
-          queue.append([dx,dy])
+  while q:
+    x, y = q.popleft()
+
+    for i in range(4) :
+       nx,ny = x + dx[i], y + dy[i]
+       if 0<=nx<n and 0<=ny<n :
+          if graphs[nx][ny] and graphs[nx][ny] != v:
+             return dist[x][y]
+          elif (not graphs[nx][ny]) and dist[nx][ny] == -1 :
+             dist[nx][ny] = dist[x][y] +1
+             q.append([nx,ny])
 
   return int(1e9)
                 
+# 섬 들 숫자로 넣기 
+
 for v in range(2,num):
   answer = min(answer, bfs2(v))
 print(answer)
