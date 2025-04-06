@@ -1,41 +1,46 @@
-def row(a, n): # 가로
+import sys
+input = sys.stdin.readline
+
+blank = []
+graphs = [ list(map(int,input().split())) for _ in range(9)]
+
+for i in range(9):
+    for j in range(9):
+        if graphs[i][j] == 0:
+            blank.append([i, j])  # i: row, j: col
+
+def check_row(row, x):
     for i in range(9):
-        if n == sudoku[a][i]: # 이미 있으면
+        if graphs[row][i] == x:
             return False
     return True
 
-def column(a, n): # 세로
+def check_col(col, x):
     for i in range(9):
-        if n == sudoku[i][a]: # 이미 있으면
+        if graphs[i][col] == x:
             return False
     return True
 
-def square(y, x, n): # 3x3 칸
+def check_sq(row, col, x):
     for i in range(3):
         for j in range(3):
-            if n == sudoku[y//3 * 3 + i][x//3 * 3 + j]: # 칸내에 이미 있으면
+            if graphs[(row//3)*3 + i][(col//3)*3 + j] == x:
                 return False
     return True
 
-def find(n):
-    if n == len(blank): # 빈 공간 만큼 사용했으면
-        for i in sudoku: # 출력 후
-            print(*i) 
-        exit() # 강제 종료
+def backtracking(depth):
+    if depth == len(blank):
+        for graph in graphs:
+            print(*graph)
+        exit()  # 정답 하나만 출력하고 종료
+        return
+    
+    row, col = blank[depth]
 
-    for i in range(1,10):
-        y = blank[n][0]
-        x = blank[n][1]
-        if column(x,i) and row(y,i) and square(y, x, i):
-            sudoku[y][x] = i
-            find(n+1)
-            sudoku[y][x] = 0
+    for i in range(1, 10):
+        if check_row(row, i) and check_col(col, i) and check_sq(row, col, i):
+            graphs[row][col] = i
+            backtracking(depth + 1)
+            graphs[row][col] = 0
 
-import sys
-sudoku = [list(map(int,sys.stdin.readline().split())) for _ in range(9)]
-blank = []
-for i in range(9):
-    for j in range(9):
-        if sudoku[i][j] == 0:
-            blank.append([i,j])
-find(0)
+backtracking(0)
