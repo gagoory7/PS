@@ -1,41 +1,38 @@
-import sys
-input = sys.stdin.readline
-
 n = int(input())
-graphs = [list(map(int, input().split())) for _ in range(n)]
 
-answer = float('inf')
+graphs = [ list(map(int,input().split())) for _ in range(n) ]
+
+
 visited = [False] * n
+answer = 1e8
 
-def backtracking(depth, idx):
-    global answer
+def backtracking(depth,x) :
+    global answer 
+    if depth == n//2 :
+        temp1 = []
+        temp2 = []
 
-    if depth == n // 2:
-        team1 = []
-        team2 = []
-        
-        for i in range(n):
-            if visited[i]:
-                team1.append(i)
-            else:
-                team2.append(i)
-        
-        s1, s2 = 0, 0
-        for i in range(n // 2):
-            for j in range(n // 2):
-                if i == j:
-                    continue
-                s1 += graphs[team1[i]][team1[j]]
-                s2 += graphs[team2[i]][team2[j]]
-        
-        answer = min(answer, abs(s1 - s2))
+        for i in range(n) :
+            if visited[i] :
+                temp1.append(i)
+            else :
+                temp2.append(i)
+
+        s = 0
+
+        for i in range(n//2) :
+            for j in range(n//2) :
+                s -= graphs[temp1[i]][temp1[j]]
+                s += graphs[temp2[i]][temp2[j]]
+
+        answer = min(answer,abs(s))
         return
-
-    for i in range(idx, n):
-        if not visited[i]:
+    for i in range(x,n) :
+        if not visited[i] :
             visited[i] = True
-            backtracking(depth + 1, i + 1)
+            backtracking(depth+1,i+1)
             visited[i] = False
 
-backtracking(0, 0)
+backtracking(0,0)
+
 print(answer)
